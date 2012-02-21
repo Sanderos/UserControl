@@ -22,7 +22,12 @@ class Application_Form_Edit extends Zend_Form
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
 	
-
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => 'users',
+						'field' => 'email'
+				)
+		);
 	
 		$email = new Zend_Form_Element_Text('email');
 		$email->setLabel('email')
@@ -32,29 +37,18 @@ class Application_Form_Edit extends Zend_Form
 		->addValidator('NotEmpty')
 		->addValidator('EmailAddress');
 
-	
 		$pass1 = new Zend_Form_Element_Password('pass1');
 		$pass1->setLabel('Password')
-		->addValidator(new Zend_Validate_Identical('pass2'))
+		
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
 
-
-	
-	
-	
-	
 		$pass2 = new Zend_Form_Element_Password('pass2');
 		$pass2->setLabel('Confirm password')
 		->addValidator(new Zend_Validate_Identical('pass1'))
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
-	
-	
-	
-	
-	
-	
+
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
 		$cansel = new Zend_Form_Element_Submit('cansel');

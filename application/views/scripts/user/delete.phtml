@@ -1,0 +1,13 @@
+<h2>Delete user</h2>
+<p>Are you sure that you want to delete 
+	
+  '<?php 
+  echo $this->escape($this->user->getFirstName());?> <?php echo $this->escape($this->user->getLastName());?> '?
+</p>
+<form action="<?php echo $this->url(array('action'=>'delete')); ?>" method="post">
+<div>
+  <input type="hidden" name="id" value="<?php echo $this->escape($this->user->getId()); ?>" />
+  <input type="submit" name="del" value="Yes" />
+  <input type="submit" name="del" value="No" />
+</div>
+</form>

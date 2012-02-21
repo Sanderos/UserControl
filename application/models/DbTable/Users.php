@@ -69,7 +69,7 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract
 		$row = $this->fetchRow(
 	    $this->select()
 	        ->where('email = ?', $user)
-			->where('password = ?', $pass)
+			->where('password = ?', md5($pass))
 	    );
 		//if we have a row returned the user & pass are correct 
 		if(!$row) {
@@ -84,9 +84,9 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract
 	public function serachUsers($search) {
 		$rows = $this->fetchAll(
 				$this->select()
-				->where('email LIKE ?', '%' . $search . '%')
-				->orWhere('firstName LIKE ?', '%' . $search . '%')
-				->orWhere('lastName LIKE ?', '%' . $search . '%')
+				->where('email LIKE ?', '%' . (String)$search . '%')
+				->orWhere('firstName LIKE ?', '%' . (String)$search . '%')
+				->orWhere('lastName LIKE ?', '%' . (String)$search . '%')
 				
 			);
 		
@@ -108,7 +108,7 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract
 				'firstName' => $user->getFirstName(),
 				'lastName' => $user->getLastName(),
 				'email' => $user->getEmail(),
-				'password' =>$user->getPass(),
+				'password' =>md5($user->getPass()),
 		);
 		$this->insert($data);
 	}
@@ -119,13 +119,14 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract
 				'firstName' => $user->getFirstName(),
 				'lastName' => $user->getLastName(),
 				'email' => $user->getEmail(),
-				'password' =>$user->getPass(),
+				'password' =>md5($user->getPass()),
 		);
 		$this->update($data, 'id = '. (int)$user->getId());
 	}
 	
 	public function deleteUser($id)
 	{
+		$id=(int)id;
 		$this->delete('id =' . (int)$id);
 	}
 	
