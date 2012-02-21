@@ -1,0 +1,6 @@
+.settings/*
+org.eclips.php.core.prefs
+org.eclips.php.server.core.phpServerPrefs.prefs
+.project
+.zfproject.xml
+doctrine2-orm/*
