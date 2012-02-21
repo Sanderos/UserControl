@@ -1,0 +1,40 @@
+<style>
+dd , dt {
+	float : left ;
+}
+
+dl {
+	margin:  0 0 0 20px ; 
+}
+</style>
+      <h2>Overzicht users</h2>
+      
+      <?php echo $this->form ; ?>
+     
+      <table>
+		<tr>
+		    <th>First name </th>
+		    <th>Last name</th>
+		    <th>Email</th>
+		    <th>actions</th>
+		</tr>
+		<?php foreach($this->paginator as $user) : ?>
+		<tr>
+		    <td><?php echo $this->escape($user->getFirstName());?></td>
+		    
+		    <td><?php echo $this->escape($user->getLastName());?></td>
+		    <td><?php echo $this->escape($user->getEmail());?></td>
+		    <td>
+		        <a href="<?php echo $this->url(array('controller'=>'index', 
+            		'action'=>'edit', 'id'=>$user->getId()));?>">Edit</a>
+		        <a href="<?php echo $this->url(array('controller'=>'index', 
+		            'action'=>'delete', 'id'=>$user->getId()));?>">Delete</a>
+		    </td>
+		</tr>
+		<?php endforeach; ?>
+		</table>
+
+	<?php echo $this->paginationControl($this->paginator,
+                                    'Sliding',
+                                    'paging.phtml',$this->search); ?>
+	

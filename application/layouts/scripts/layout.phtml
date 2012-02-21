@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#header {
+	position: relative;
+	height: 50px;
+	width: 100%;
+	background-color: gray;
+}
+	
+h1 {
+	display: block;
+	width: 355px;
+	overflow: hidden;
+	margin : 0 0 0 20px; 
+}
+
+
+#menubar {
+	width: 100%;
+	background-color: #222;
+	overflow: hidden;
+ 	height: 28px;
+	line-height: 28px;
+	padding: 0;
+	maring-bottom : 25px;
+}
+		
+#menubar ul {
+	margin: 0 0 0 25%;
+  	line-height: 28px;
+	padding: 0;
+		  
+}
+		
+#menubar ul li {
+	list-style-type: none;
+	display: inline;
+	margin-right: 40px;
+
+}
+
+#menubar ul li a {
+	font-size: 12px;
+	font-variant: small-caps;
+	text-decoration: none;
+	color: #999;
+	font-weight: bold;
+}
+		
+#menubar ul li.active a {
+	color: #ddd;
+}
+		
+#menubar ul li a:hover {
+	color: #fff;
+}
+
+#main {
+	width : 960px;
+	border : 1px solid;
+	margin: 0px auto;
+	padding: 5px;
+}
+
+/**
+ * tables
+ */
+ 
+ table {
+ 	margin : 20px;
+	width : 80%;
+ }
+ 
+ table th {
+	background-color : gray;
+ }
+ 
+ td{
+ 	margin : 0px;
+ 	padding: 0px;
+	border-bottom: 1px solid;
+ }
+
+</style>
+<title>Beheersysteem</title>
+</head>
+
+<body>
+<div id="site">
+	<header>
+		
+		<div id="header">
+		<h1>User Beheer systeem</h1>
+		</div>
+		<div id="menubar">
+         <ul>
+           <li><a href="<?php echo $this->url(array('controller'=>'index', 
+		            'action'=>'index', 'search' => null));?>" transition-link="" transition-name="slide">Overview </a></li>
+            <li><a href="<?php echo $this->url(array('controller'=>'index', 
+		            'action'=>'add'));?>" transition-link="" transition-name="slide">Add </a></li>
+		     <li><a href="<?php echo $this->url(array('controller'=>'index', 
+		            'action'=>'logout'));?>" transition-link="" transition-name="slide">Logout </a></li>
+          
+         </ul>
+         </div>
+   
+      
+      
+	
+	</header>
+    
+
+    <div id="main">
+		<?php  echo $this->layout()->content; ?>
+
+    </div>                     
+</div>
+</body>
+
+</html>
