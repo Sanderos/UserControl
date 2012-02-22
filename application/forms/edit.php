@@ -1,4 +1,6 @@
 <?php
+
+
 class Application_Form_Edit extends Zend_Form
 {
 	public function init()
@@ -21,19 +23,15 @@ class Application_Form_Edit extends Zend_Form
 		->setRequired(true)
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
+		
 	
-		$validator = new Zend_Validate_Db_NoRecordExists(
-				array(
-						'table' => 'users',
-						'field' => 'email'
-				)
-		);
 	
 		$email = new Zend_Form_Element_Text('email');
 		$email->setLabel('email')
 		->setRequired(true)
 		->addFilter('StripTags')
 		->addFilter('StringTrim')
+		
 		->addValidator('NotEmpty')
 		->addValidator('EmailAddress');
 

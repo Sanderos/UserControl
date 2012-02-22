@@ -1,11 +1,14 @@
 <?php
+namespace Entities;
 /**
- * @Entity @Table(name="users")
+ * @Entity(repositoryClass="Repositories\UserRepository")
+ * @Table(name="users")
 **/
 class User
 {
 	/**
-	 * @Id @GeneratedValue @Column(type="integer")
+	 * @Id @GeneratedValue 
+	 * @Column(type="integer")
 	 * @var int
 	 **/
 	protected $id;
@@ -34,7 +37,7 @@ class User
 	 **/
 	protected $password;
 
-	// .. (other code)
+	//getters & setters
 	public function setLastName($lastName) {
 		$this->lastName = $lastName;
 	}
@@ -52,11 +55,11 @@ class User
 	}
 	
 	public function setPass($pass) {
-		$this->pass = $pass;
+		$this->password = $pass;
 	}
 	
 	public function getPass() {
-		return $this->pass;
+		return $this->password;
 	}
 	
 	public function setEmail($email) {

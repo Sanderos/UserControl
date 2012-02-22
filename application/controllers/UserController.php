@@ -1,7 +1,9 @@
 <?php
-
+use Entities\User ;
 class UserController extends Zend_Controller_Action
 {
+	
+	protected $em;
 	/**
 	 * The default action - show the home page
 	 */
@@ -10,17 +12,14 @@ class UserController extends Zend_Controller_Action
     	if(!Zend_Auth::getInstance()->hasIdentity()) {
     		$this->_redirect('/index/login');
     	}
+    	$user = new User();
+    	$this->em = $this->getInvokeArg('bootstrap')->getResource('doctrine');
     }
     
     public function indexAction()
     {
-    	 
-    	 
-    	 
+
     	$search =$this->_getParam('search');
-    	 
-    	$users = new Application_Model_DbTable_Users();
-    	 
     	$form = new Application_Form_Search();
     	$form->submit->setLabel('search');
     	$this->view->form = $form;
@@ -39,31 +38,21 @@ class UserController extends Zend_Controller_Action
     			 
     		} else {
     
-    			$paginator = Zend_Paginator::factory($users->getUsers());
-    
+    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findAll());
     		}
     	} else {
     		//Initialize the Zend_Paginator
-    
-    
     		if($search != null) {
-    			$paginator = Zend_Paginator::factory($users->serachUsers($search));
+    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->searchUsers($search));
     		}else {
-    			$paginator = Zend_Paginator::factory($users->getUsers());
+    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findAll());
     		}
-    		 
-    
     	}
-    	 
     	$currentPage= $this->_getParam('page');
-    	 
     	//Set the properties for the pagination
     	$paginator->setItemCountPerPage(5);
-    	 
     	$paginator->setPageRange(3);
     	$paginator->setCurrentPageNumber($currentPage);
-    	 
-    
     	$this->view->paginator = $paginator;
     }
     
@@ -84,10 +73,22 @@ class UserController extends Zend_Controller_Action
     			$lastName = $form->getValue('lastName');
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
+    			
+    			$user = new User();
+    			$user->setEmail($email);
+    			$user->setFirstName($firstName);
+    			$user->setLastName($lastName);
+    			$user->setPass(md5($pass));
+    			
+    			$this->em->persist($user);
+    			$this->em->flush();
+    			
     			 
     			//make user
     			$users = new Application_Model_DbTable_Users();
-    			$this->_helper->redirector('user/index');
+    			
+    			$this->_helper->redirector('index','user' , null, array());
+    			 
 
     		} else {
     			$form->populate($formData);
@@ -115,18 +116,19 @@ class UserController extends Zend_Controller_Action
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
     			//edit user
-    			$users = new Application_Model_DbTable_Users();
-    			$user = $users->getUser($id);
+    			
+    			
+    			$user =$this->em->getRepository('entities\User')->findOneById($id);
+    			
     			$user->setEmail($email);
     			$user->setFirstName($firstName);
     			$user->setLastName($lastName);
     			if($pass != '') {
-    				$user->setPass($pass);
+    				$user->setPass(md5($pass));
     			}
-
-    			//add user to database
-    			$users->updateUser($user);
-    			$this->_helper->redirector('user/index');
+    			$user =$this->em->getRepository('entities\User')->updateUser($user);
+    			
+    			$this->_helper->redirector('index','user' , null, array());
  
     		} else {
     			$form->populate($formData);
@@ -134,9 +136,9 @@ class UserController extends Zend_Controller_Action
     	}else {
     		$id = $this->_getParam('id', 0);
     		if ($id > 0) {
-    			$users = new Application_Model_DbTable_Users();
-    			$user =$users->getUser($id);
-    
+    			//$users = new Application_Model_DbTable_Users();
+    			//$user =$users->getUser($id);
+    			$user =$this->em->getRepository('entities\User')->findOneById($id);
     			$arr = array("id" => $user->getId(),
     					"firstName" => $user->getFirstName(),
     					"lastName" => $user->getLastName(),
@@ -145,7 +147,7 @@ class UserController extends Zend_Controller_Action
     			$form->populate($arr);
     
     		}else{
-    			$this->_helper->redirector('user/index');
+    			$this->_helper->redirector('index','user' , null, array());
     		}
     	}    	 
     }
@@ -163,15 +165,15 @@ class UserController extends Zend_Controller_Action
     			$id = $this->getRequest()->getPost('id');
     			 
     			//verwijder user
-    			$users = new Application_Model_DbTable_Users();
-    			$users->deleteUser($id);
+    			
+    			$this->em->getRepository('entities\User')->delete($id);
     		}
-    		$this->_helper->redirector('user/index');
+    		$this->_helper->redirector('index','user' , null, array());;
     	} else {
     		$id = $this->_getParam('id', 0);
-    		$users = new Application_Model_DbTable_Users();
-    		if($users->getUser($id) == null) $this->_helper->redirector('user/index');
-    		$this->view->user = $users->getUser($id);
+    		$user =$this->em->getRepository('entities\User')->findOneById($id);
+    		if($user == null)$this->_helper->redirector('index','user' , null, array());
+    		$this->view->user = $user;
     	}
     }
     

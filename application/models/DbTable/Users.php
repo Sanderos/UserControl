@@ -65,7 +65,8 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract
 		$this->updateUser(new Application_Model_User($row['id'], $row['firstName'], $row['lastName'], $row['email'], $pass));
 	}
 	
-	public function checkLogin ($user, $pass) {
+	public function checkLogin ($user, $pass) 
+	{
 		$row = $this->fetchRow(
 	    $this->select()
 	        ->where('email = ?', $user)
@@ -81,7 +82,8 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract
 		
 	}
 	
-	public function serachUsers($search) {
+	public function serachUsers($search) 
+	{
 		$rows = $this->fetchAll(
 				$this->select()
 				->where('email LIKE ?', '%' . (String)$search . '%')
