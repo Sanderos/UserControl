@@ -23,24 +23,20 @@ class Application_Form_Edit extends Zend_Form
 		->setRequired(true)
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
-		
-	
 	
 		$email = new Zend_Form_Element_Text('email');
 		$email->setLabel('email')
 		->setRequired(true)
 		->addFilter('StripTags')
 		->addFilter('StringTrim')
-		
 		->addValidator('NotEmpty')
 		->addValidator('EmailAddress');
-
+		
 		$pass1 = new Zend_Form_Element_Password('pass1');
 		$pass1->setLabel('Password')
-		
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
-
+		
 		$pass2 = new Zend_Form_Element_Password('pass2');
 		$pass2->setLabel('Confirm password')
 		->addValidator(new Zend_Validate_Identical('pass1'))

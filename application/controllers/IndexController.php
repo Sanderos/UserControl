@@ -1,5 +1,6 @@
 <?php
 use Entities\User ;
+use Entities\Group ;
 
 class IndexController extends Zend_Controller_Action
 {
@@ -48,11 +49,8 @@ class IndexController extends Zend_Controller_Action
     				$mail->setBodyText('your new  pasword is ' . $unique);
     				$mail->send($tr);
     				//$users->changePass($email, $unique);
-    				$this->em->getRepository('Entities\User')->changePass($email, $unique);
-    				$this->view->mail ="Email send";
-    				
-    			
-    			
+    				$user = $this->em->getRepository('entities\User')->findOneByEmail($email);
+    				$user->setPass(md5($unique));
     		}
     	}
         
@@ -71,30 +69,29 @@ class IndexController extends Zend_Controller_Action
     			//form valid add user get user information
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass');
-
-    			$dbAdapter = new Application_Model_DbTable_Users();
+				
     			
+    			$user = $this->em->getRepository('entities\User')->login($email, md5($pass));
     			
-    			$authAdapter = new Zend_Auth_Adapter_DbTable($dbAdapter->getAdapter());
-    			
-    			$authAdapter->setTableName('users')
-    			->setIdentityColumn('email')
-    			->setCredentialColumn('password');
-    			 
-    			$authAdapter->setIdentity($email)
-    			->setCredential(md5($pass));
-    			
+    			if($user != null){
+    				
+    				$result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS,$user,array());
+    			}else{
+    				$result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID,null,array());
+    			}
     			$auth = Zend_Auth::getInstance();
-    			$result = $auth->authenticate($authAdapter);
+    			
     			
     			if($result->isValid())
     			{
     				// get all info about this user from the login table
     				// ommit only the password, we don't need that
-    				$userInfo = $authAdapter->getResultRowObject(null, 'password');
+    				
+    				
     				// the default storage is a session with namespace Zend_Auth
     				$authStorage = $auth->getStorage();
-    				$authStorage->write($userInfo);
+    				$authStorage->write($user);
+    				
     				$this->_helper->redirector('index','user' , null, array());
     			} else {
     				//do nothing 

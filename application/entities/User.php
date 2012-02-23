@@ -1,11 +1,25 @@
 <?php
 namespace Entities;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Entities\Group;
+
 /**
  * @Entity(repositoryClass="Repositories\UserRepository")
  * @Table(name="users")
 **/
 class User
 {
+	/**
+	 * @ManyToMany(targetEntity="Group", inversedBy="users")
+	 * @JoinTable(name="users_groups")
+	 */
+	private $groups;
+	
+	public function __construct() {
+		$this->groups = new ArrayCollection();
+	}
+	
 	/**
 	 * @Id @GeneratedValue 
 	 * @Column(type="integer")
@@ -73,4 +87,13 @@ class User
 	public function getId() {
 		return $this->id;
 	}
+	
+	public function addGroup(Group $group) {
+		$this->groups->add($group);
+	}
+	
+	public function getGroup() {
+		return $this->groups;
+	}
+	
 }

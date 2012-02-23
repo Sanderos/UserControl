@@ -5,7 +5,6 @@ class Application_Form_Add extends Zend_Form
 	
 	public function init()
 	{
-
 		$this->setName('user');
 
 		$firstName = new Zend_Form_Element_Text('firstName');
@@ -22,7 +21,6 @@ class Application_Form_Add extends Zend_Form
 		->addFilter('StringTrim')
 		->addValidator('NotEmpty');
 		
-		
 		//Check that the email address exists in the database
 		$validator = new Zend_Validate_Db_NoRecordExists(
 				array(
@@ -31,6 +29,7 @@ class Application_Form_Add extends Zend_Form
 				)
 		);
 		
+		$validator = new MyValid_Email\MyValid_Email();
 		$email = new Zend_Form_Element_Text('email');
 		$email->setLabel('email')
 		->setRequired(true)
@@ -45,7 +44,6 @@ class Application_Form_Add extends Zend_Form
 		->setRequired(true)
 		->addFilter('StripTags')
 		->addFilter('StringTrim')
-		
 		->addValidator('NotEmpty');
 		
 		$pass2 = new Zend_Form_Element_Password('pass2');
@@ -58,7 +56,6 @@ class Application_Form_Add extends Zend_Form
 
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
-
 		$this->addElements(array($firstName, $lastName, $email, $pass1 , $pass2, $submit));
 	}
 }

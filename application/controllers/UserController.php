@@ -1,8 +1,9 @@
 <?php
 use Entities\User ;
+use Entities\Group ;
+
 class UserController extends Zend_Controller_Action
 {
-	
 	protected $em;
 	/**
 	 * The default action - show the home page
@@ -18,26 +19,16 @@ class UserController extends Zend_Controller_Action
     
     public function indexAction()
     {
-
     	$search =$this->_getParam('search');
     	$form = new Application_Form_Search();
     	$form->submit->setLabel('search');
     	$this->view->form = $form;
-    	 
-    	 
-    	 
-    	 
     	if ($this->getRequest()->isPost()) {
     		$formData = $this->getRequest()->getPost();
-    
     		if ($form->isValid($formData)){
-    			 
     			//$paginator = Zend_Paginator::factory($users->serachUsers($form->getValue('searchfield')));
     			$this->_helper->redirector('index', null , null, array('search'=>$form->getValue('searchfield')));
-    			 
-    			 
     		} else {
-    
     			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findAll());
     		}
     	} else {
@@ -81,12 +72,7 @@ class UserController extends Zend_Controller_Action
     			$user->setPass(md5($pass));
     			
     			$this->em->persist($user);
-    			$this->em->flush();
-    			
-    			 
-    			//make user
-    			$users = new Application_Model_DbTable_Users();
-    			
+    			$this->em->flush();		
     			$this->_helper->redirector('index','user' , null, array());
     			 
 
@@ -115,21 +101,16 @@ class UserController extends Zend_Controller_Action
     			$lastName = $form->getValue('lastName');
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
-    			//edit user
-    			
-    			
+
     			$user =$this->em->getRepository('entities\User')->findOneById($id);
-    			
     			$user->setEmail($email);
     			$user->setFirstName($firstName);
     			$user->setLastName($lastName);
     			if($pass != '') {
     				$user->setPass(md5($pass));
     			}
-    			$user =$this->em->getRepository('entities\User')->updateUser($user);
-    			
+    			$this->em->flush();
     			$this->_helper->redirector('index','user' , null, array());
- 
     		} else {
     			$form->populate($formData);
     		}
@@ -163,10 +144,10 @@ class UserController extends Zend_Controller_Action
     		if ($del == 'Yes') {
     			//get id
     			$id = $this->getRequest()->getPost('id');
-    			 
     			//verwijder user
-    			
-    			$this->em->getRepository('entities\User')->delete($id);
+    			$user = $this->em->getRepository('entities\User')->findOneById($id);
+    			$this->em->remove($user);
+    			$this->em->flush();
     		}
     		$this->_helper->redirector('index','user' , null, array());;
     	} else {
@@ -176,13 +157,9 @@ class UserController extends Zend_Controller_Action
     		$this->view->user = $user;
     	}
     }
-    
     //logout action
     public function logoutAction() {
     	// clear everything - session is cleared also!
     	Zend_Auth::getInstance()->clearIdentity();
     }
-    
-    
-    
 }
