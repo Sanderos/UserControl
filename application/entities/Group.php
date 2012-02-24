@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  **/
 class Group
 {
+	
 	// ...
 	/**
 	 * @ManyToMany(targetEntity="User", mappedBy="groups")
@@ -44,10 +45,10 @@ class Group
 		return $this->id;
 	}
 	
-	
-	
-	
 	public function getUsers() {
 		return $this->users;
 	}
+	
+	
+	
 }
