@@ -1,0 +1,39 @@
+      <h2>view Groups</h2>
+      
+      <?php echo $this->form ; ?>
+     
+      <table>
+		<tr>
+		    <th>Groupname</th>
+		    <th>Users</th>
+		   	<th>Actions</th>
+		</tr>
+		<?php foreach($this->paginator as $group) : ?>
+		<tr>
+		    <td><?php echo $this->escape($group->getName());?></td>
+		    
+		  
+		    <td>
+		    	<?php 
+		    	echo count($group->getUsers());
+		    		
+		    	?>
+		    </td>
+		    <td>
+		    <a href="<?php echo $this->url(array('controller'=>'user', 
+		            'action'=>'deletegroup', 'id'=>$group->getId()));?>">Delete</a>
+		   
+		    <a href="<?php echo $this->url(array('controller'=>'user', 
+		            'action'=>'editgroup', 'id'=>$group->getId()));?>">edit</a>
+		    </td>
+		    
+		</tr>
+		<?php endforeach; ?>
+		</table>
+
+	<?php echo $this->paginationControl($this->paginator,
+                                    'Sliding',
+                                    'paging.phtml',$this->search); ?>
+	
+	<a href="<?php echo $this->url(array('controller'=>'user', 
+		            'action'=>'addgroup'));?>" transition-link="" transition-name="slide">add group </a>

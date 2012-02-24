@@ -3,6 +3,17 @@
 
 class Application_Form_Edit extends Zend_Form
 {
+	private $groups;
+	private $user;
+	
+	public function setGroups($groups) {
+		$this->groups = $groups;
+	}
+	
+	public function setUser($user) {
+		$this->user = $user;
+	}
+	
 	public function init()
 	{
 		$this->setName('user');
@@ -42,13 +53,24 @@ class Application_Form_Edit extends Zend_Form
 		->addValidator(new Zend_Validate_Identical('pass1'))
 		->addFilter('StripTags')
 		->addFilter('StringTrim');
-
+		
+		$group = new Zend_Form_Element_MultiCheckbox('groups');
+		$group->setLabel('groups');
+		foreach ($this->groups as $g) {
+			$group->addMultiOption($g->getName(),$g->getName());
+			
+		}
+		$gr = array();
+		foreach($this->user->getGroup() as $g){
+			array_push($gr, $g->getName());
+		}
+		$group->setValue($gr);
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
 		$cansel = new Zend_Form_Element_Submit('cansel');
 	
 	
-		$this->addElements(array($id, $firstName, $lastName, $email, $pass1 , $pass2, $submit));
+		$this->addElements(array($id, $firstName, $lastName, $email, $pass1 , $pass2, $group, $submit));
 	}
 	}
 	

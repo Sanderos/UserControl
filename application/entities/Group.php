@@ -36,11 +36,18 @@ class Group
 		$this->name = $name;
 	}
 	
-	public function name() {
+	public function getName() {
 		return $this->name;
 	}
 	
 	public function getId() {
 		return $this->id;
+	}
+	
+	
+	
+	
+	public function getUsers() {
+		return $this->users;
 	}
 }

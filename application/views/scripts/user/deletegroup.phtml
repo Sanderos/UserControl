@@ -1,0 +1,13 @@
+<h2>Delete group</h2>
+<p>Are you sure that you want to delete 
+	
+  '<?php 
+  echo $this->escape($this->group->getName());?>'?
+</p>
+<form action="<?php echo $this->url(array('action'=>'deletegroup')); ?>" method="post">
+<div>
+  <input type="hidden" name="id" value="<?php echo $this->escape($this->group->getId()); ?>" />
+  <input type="submit" name="del" value="Yes" />
+  <input type="submit" name="del" value="No" />
+</div>
+</form>

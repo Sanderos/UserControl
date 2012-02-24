@@ -92,14 +92,16 @@ h1 {
 	<header>
 		
 		<div id="header">
-		<h1>User Beheer systeem</h1>
+		<h1>User management</h1>
 		</div>
 		<div id="menubar">
          <ul>
            <li><a href="<?php echo $this->url(array('controller'=>'user', 
-		            'action'=>'index', 'search' => null));?>" transition-link="" transition-name="slide">Overview </a></li>
+		            'action'=>'index', 'search' => null));?>" transition-link="" transition-name="slide">Users </a></li>
+             <li><a href="<?php echo $this->url(array('controller'=>'user', 
+		            'action'=>'groups', 'search' => null));?>" transition-link="" transition-name="slide">Groups </a></li>
             <li><a href="<?php echo $this->url(array('controller'=>'user', 
-		            'action'=>'add'));?>" transition-link="" transition-name="slide">Add </a></li>
+		            'action'=>'add'));?>" transition-link="" transition-name="slide">Add User</a></li>
 		     <li><a href="<?php echo $this->url(array('controller'=>'user', 
 		            'action'=>'logout'));?>" transition-link="" transition-name="slide">Logout </a></li>
           

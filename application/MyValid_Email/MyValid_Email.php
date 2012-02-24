@@ -14,7 +14,7 @@ class MyValid_Email extends Zend_Validate_Abstract
 	{
 		$this->_setValue($email);
 		$this->em = \Zend_Registry::get('em');
-		if ($this->em->getRepository('entities\User')->getUserByEmail($email) != null) {
+		if ($this->em->getRepository('entities\User')->findOneByEmail($email) != null) {
 			$this->_error(self::FLOAT);
 			return false;
 		}

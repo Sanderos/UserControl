@@ -7,7 +7,7 @@ dl {
 	margin:  0 0 0 20px ; 
 }
 </style>
-      <h2>Overzicht users</h2>
+      <h2>view users</h2>
       
       <?php echo $this->form ; ?>
      
@@ -16,6 +16,7 @@ dl {
 		    <th>First name </th>
 		    <th>Last name</th>
 		    <th>Email</th>
+		    <th>groups</th>
 		    <th>actions</th>
 		</tr>
 		<?php foreach($this->paginator as $user) : ?>
@@ -24,6 +25,13 @@ dl {
 		    
 		    <td><?php echo $this->escape($user->getLastName());?></td>
 		    <td><?php echo $this->escape($user->getEmail());?></td>
+		    <td>
+		    	<?php 
+		    	foreach($user->getGroup() as $group) :
+		    		echo $group->getName() . ' ';
+		    	endforeach;
+		    	?>
+		    </td>
 		    <td>
 		        <a href="<?php echo $this->url(array('controller'=>'user', 
             		'action'=>'edit', 'id'=>$user->getId()));?>">Edit</a>
@@ -37,4 +45,6 @@ dl {
 	<?php echo $this->paginationControl($this->paginator,
                                     'Sliding',
                                     'paging.phtml',$this->search); ?>
+    <a href="<?php echo $this->url(array('controller'=>'user', 
+		            'action'=>'add'));?>" transition-link="" transition-name="slide">add user </a>
 	

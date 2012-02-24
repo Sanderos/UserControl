@@ -1,7 +1,15 @@
 <?php
+use Entities\User ;
+use Entities\Group ;
 
 class Application_Form_Add extends Zend_Form
 {
+	private $groups;
+	
+	public function setGroups($groups) {
+		$this->groups = $groups;
+	}
+	
 	
 	public function init()
 	{
@@ -53,10 +61,16 @@ class Application_Form_Add extends Zend_Form
 		->addFilter('StringTrim')
 		->addValidator(new Zend_Validate_Identical('pass1'))
 		->addValidator('NotEmpty');
-
+		
+		$group = new Zend_Form_Element_MultiCheckbox('groups');
+		$group->setLabel('groups');
+		foreach ($this->groups as $g) {
+			$group->addMultiOption($g->getName(),$g->getName());
+		}
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
-		$this->addElements(array($firstName, $lastName, $email, $pass1 , $pass2, $submit));
+		
+		$this->addElements(array($firstName, $lastName, $email, $pass1 , $pass2,$group, $submit));
 	}
 }
 

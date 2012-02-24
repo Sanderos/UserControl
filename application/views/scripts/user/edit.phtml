@@ -19,4 +19,12 @@
 <?php 
 echo $this->form ;
 ?>
+<p>
+	User is in following group(s) :
+	<?php 
+		    	foreach($this->user->getGroup() as $group) :
+		    		echo $group->getName() . ' ';
+		    	endforeach;
+		    	?> 
+</p>
 <p><span class="error"><?php echo $this->error;?></span></p>

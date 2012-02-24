@@ -89,7 +89,17 @@ class User
 	}
 	
 	public function addGroup(Group $group) {
-		$this->groups->add($group);
+		if(!$this->groups->contains($group)) {
+			$this->groups->add($group);
+		}
+	}
+	
+	public function removeGroups() {
+			$this->groups->clear();
+	}
+	
+	public function removeUser(Group $group) {
+		$this->groups->removeElement($group);
 	}
 	
 	public function getGroup() {

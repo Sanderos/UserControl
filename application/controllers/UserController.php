@@ -50,7 +50,9 @@ class UserController extends Zend_Controller_Action
     //add action
     public function addAction()
     {
-    	$form = new Application_Form_Add();
+    	$groups = $this->em->getRepository('Entities\Group')->findAll();
+    	$form = new Application_Form_Add(array('groups'=>$groups));
+    	
     	$form->submit->setLabel('Add');
     	$this->view->form = $form;
     
@@ -64,6 +66,8 @@ class UserController extends Zend_Controller_Action
     			$lastName = $form->getValue('lastName');
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
+    			$group = $form->getValue('groups');
+    			
     			
     			$user = new User();
     			$user->setEmail($email);
@@ -72,7 +76,16 @@ class UserController extends Zend_Controller_Action
     			$user->setPass(md5($pass));
     			
     			$this->em->persist($user);
-    			$this->em->flush();		
+    			$this->em->flush();
+				//get the user
+    			
+    			//add user to group(s)
+    			foreach ($group as $g) {
+    				if($group!=''){
+    					$user->addGroup($this->em->getRepository('Entities\Group')->findOneByName($g));
+    				}
+    				$this->em->flush();
+    			}
     			$this->_helper->redirector('index','user' , null, array());
     			 
 
@@ -83,11 +96,39 @@ class UserController extends Zend_Controller_Action
     
     }
     
+    //add action
+    public function addgroupAction()
+    {
+    	$form = new Application_Form_Addgroup();
+    	$form->submit->setLabel('Add');
+    	$this->view->form = $form;
+    	if ($this->getRequest()->isPost()) {
+    		$formData = $this->getRequest()->getPost();
+    		if ($form->isValid($formData)) {
+    			//form valid add user
+    			//get user information
+    			$groupName = $form->getValue('name');
+    			$group = new Group();
+    			$group->setName($groupName);
+    			if($this->em->getRepository('Entities\Group')->findOneByName($groupName) == null) {
+    				$this->em->persist($group);
+    				$this->em->flush();
+	    		}
+    			$this->_helper->redirector('groups','user' , null, array());
+    		} else {
+    			$form->populate($formData);
+    		}
+    	}
+    
+    }
+    
     //edit action
     public function editAction()
     {
-    
-    	$form = new Application_Form_Edit();
+    	$id = $this->_getParam('id', 0);
+    	$groups = $this->em->getRepository('Entities\Group')->findAll();
+    	$user =$this->em->getRepository('entities\User')->findOneById($id);
+    	$form = new Application_Form_Edit(array('groups'=>$groups ,'user'=>$user));
     	$form->submit->setLabel('Edit');
     	$this->view->form = $form;
 
@@ -101,8 +142,12 @@ class UserController extends Zend_Controller_Action
     			$lastName = $form->getValue('lastName');
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
-
+    			$group = $form->getValue('groups');
+    		
+    			
+				
     			$user =$this->em->getRepository('entities\User')->findOneById($id);
+    			$user->removeGroups();
     			$user->setEmail($email);
     			$user->setFirstName($firstName);
     			$user->setLastName($lastName);
@@ -110,6 +155,14 @@ class UserController extends Zend_Controller_Action
     				$user->setPass(md5($pass));
     			}
     			$this->em->flush();
+	    		foreach ($group as $g) {
+	    			if($group!=''){
+	    				$user->addGroup($this->em->getRepository('Entities\Group')->findOneByName($g));
+	    			}
+	    			$this->em->flush();
+	    		}
+    			
+    			
     			$this->_helper->redirector('index','user' , null, array());
     		} else {
     			$form->populate($formData);
@@ -120,12 +173,17 @@ class UserController extends Zend_Controller_Action
     			//$users = new Application_Model_DbTable_Users();
     			//$user =$users->getUser($id);
     			$user =$this->em->getRepository('entities\User')->findOneById($id);
+    			$groups = $user->getGroup();
+    			$group = '';
+    			
+    			
     			$arr = array("id" => $user->getId(),
     					"firstName" => $user->getFirstName(),
     					"lastName" => $user->getLastName(),
     					"email" => $user->getEmail()
     			);
     			$form->populate($arr);
+    			$this->view->user = $user;
     
     		}else{
     			$this->_helper->redirector('index','user' , null, array());
@@ -157,9 +215,95 @@ class UserController extends Zend_Controller_Action
     		$this->view->user = $user;
     	}
     }
+    
+    public function deletegroupAction()
+    {
+    	if ($this->getRequest()->isPost()) {
+    		//if request is post
+    		$del = $this->getRequest()->getPost('del');
+    
+    		//if delete button pressed (else go to index, overview)
+    		if ($del == 'Yes') {
+    			//get id
+    			$id = $this->getRequest()->getPost('id');
+    		
+    			$group= $this->em->getRepository('Entities\Group')->findOneById($id);
+    			
+    			$this->em->remove($group);
+    			$this->em->flush();
+    		}
+    		$this->_helper->redirector('groups','user' , null, array());;
+    	} else {
+    		$id = $this->_getParam('id', 0);
+    		$group= $this->em->getRepository('Entities\Group')->findOneById($id);
+    		if($group == null)$this->_helper->redirector('groups','user' , null, array());
+    		$this->view->group = $group;
+    	}
+    }
+    
     //logout action
     public function logoutAction() {
     	// clear everything - session is cleared also!
     	Zend_Auth::getInstance()->clearIdentity();
     }
+    
+    //edit groups
+    public function groupsAction() {
+    	
+    	$paginator = Zend_Paginator::factory($this->em->getRepository('Entities\Group')->findAll());
+    	$currentPage= $this->_getParam('page');
+    	//Set the properties for the pagination
+    	$paginator->setItemCountPerPage(5);
+    	$paginator->setPageRange(3);
+    	$paginator->setCurrentPageNumber($currentPage);
+    	$this->view->paginator = $paginator;
+    }
+    
+    public function editgroupAction() {
+    	$form = new Application_Form_Editgroup();
+    	$form->submit->setLabel('Edit group');
+    	$this->view->form = $form;
+    	
+    	if ($this->getRequest()->isPost()) {
+    		$formData = $this->getRequest()->getPost();
+    		if ($form->isValid($formData)) {
+    			//edit group
+    			$id = $form->getValue('id');
+    			$name = $form->getValue('name');
+    			$group =$this->em->getRepository('Entities\Group')->findOneById($id);
+    			$group->setName($name);
+    			$this->em->persist($group);
+    			$this->em->flush();
+    			$this->_helper->redirector('groups','user' , null, array());		
+    		}else {
+    			$form->populate($formData);
+    		}
+    	}else {
+    	$id = $this->_getParam('id', 0);
+    		$group =$this->em->getRepository('Entities\Group')->findOneById($id);
+    		if ($group != null) {
+    			$arr = array("id" => $group->getId(),
+    					"name" => $group->getName()
+    					
+    			);
+    			$form->populate($arr);
+    			$this->view->users = $group->getUsers();
+    		}else{
+    			$this->_helper->redirector('groups','user' , null, array());
+    		}
+    	}
+    }
+    
+    public function deleteuserfromgroupAction() {
+    	$id_user= $this->_getParam('userid');
+    	$id= $this->_getParam('id');
+    	$group =$this->em->getRepository('Entities\Group')->findOneById($id);
+    	$user =$this->em->getRepository('Entities\User')->findOneById($id_user);
+    	$user->removeUser($group);
+    	$this->em->flush();
+    	
+    	
+    	$this->_helper->redirector('editgroup','user' , null, array('id'=>$id));
+    }
+    
 }
