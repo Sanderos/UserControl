@@ -2,22 +2,24 @@
 <html>
 <head>
 <style>
-#header {
+#header 
+{
 	position: relative;
 	height: 50px;
 	width: 100%;
 	background-color: gray;
 }
 	
-h1 {
+h1
+{
 	display: block;
 	width: 355px;
 	overflow: hidden;
 	margin : 0 0 0 20px; 
 }
 
-
-#menubar {
+#menubar 
+{
 	width: 100%;
 	background-color: #222;
 	overflow: hidden;
@@ -27,21 +29,24 @@ h1 {
 	maring-bottom : 25px;
 }
 		
-#menubar ul {
+#menubar ul 
+{
 	margin: 0 0 0 25%;
   	line-height: 28px;
 	padding: 0;
 		  
 }
 		
-#menubar ul li {
+#menubar ul li 
+{
 	list-style-type: none;
 	display: inline;
 	margin-right: 40px;
 
 }
 
-#menubar ul li a {
+#menubar ul li a 
+{
 	font-size: 12px;
 	font-variant: small-caps;
 	text-decoration: none;
@@ -49,15 +54,18 @@ h1 {
 	font-weight: bold;
 }
 		
-#menubar ul li.active a {
+#menubar ul li.active a 
+{
 	color: #ddd;
 }
 		
-#menubar ul li a:hover {
+#menubar ul li a:hover 
+{
 	color: #fff;
 }
 
-#main {
+#main 
+{
 	width : 960px;
 	border : 1px solid;
 	margin: 0px auto;
@@ -68,16 +76,19 @@ h1 {
  * tables
  */
  
- table {
+ table 
+ {
  	margin : 20px;
 	width : 80%;
  }
  
- table th {
+ table th 
+ {
 	background-color : gray;
  }
  
- td{
+ td
+ {
  	margin : 0px;
  	padding: 0px;
 	border-bottom: 1px solid;
@@ -85,12 +96,12 @@ h1 {
 
 </style>
 <title>Beheersysteem</title>
+ 
 </head>
 
 <body>
 <div id="site">
 	<header>
-		
 		<div id="header">
 		<h1>User management</h1>
 		</div>
@@ -107,18 +118,11 @@ h1 {
           
          </ul>
          </div>
-   
-      
-      
-	
 	</header>
     
-
     <div id="main">
 		<?php  echo $this->layout()->content; ?>
-
     </div>                     
 </div>
 </body>
-
 </html>

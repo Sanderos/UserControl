@@ -11,15 +11,6 @@ class IndexController extends Zend_Controller_Action
         /* Initialize action controller here */
     	$user = new User();
     	$this->em = $this->getInvokeArg('bootstrap')->getResource('doctrine');
-    	//all users
-    	//$users = $em->getRepository('entities\User')->findAll();
-    	
-    	//get user by id
-    	//$users = $this->em->getRepository('Entities\User')->getUser(1);
-    	
-    	
-    	//Zend_Debug::dump($users);
-    	
     }
     
     //edit action
@@ -29,28 +20,24 @@ class IndexController extends Zend_Controller_Action
     	$form->submit->setLabel('send email');
     	$this->view->form = $form;
     	
-    	
-    	
-    if ($this->getRequest()->isPost()) {
-    		//get formdata
-    		$formData = $this->getRequest()->getPost();
-    		if ($form->isValid($formData)) {
-    			$email = $form->getValue('email');
-    			//check mail
-    			
-    				//create unique code
-    				$unique = substr(md5(uniqid()), 3, 6);
-    				
-    				$mail = new Zend_Mail();
-    				$tr = new Zend_Mail_Transport_Smtp('uit.telenet.be');
-    				$mail->setFrom('forgot@marlon.be', 'Server');
-    				$mail->addTo($email);
-    				$mail->setSubject('Password recovery');
-    				$mail->setBodyText('your new  pasword is ' . $unique);
-    				$mail->send($tr);
-    				//$users->changePass($email, $unique);
-    				$user = $this->em->getRepository('entities\User')->findOneByEmail($email);
-    				$user->setPass(md5($unique));
+	    if ($this->getRequest()->isPost()) {
+	   		//get formdata
+	    	$formData = $this->getRequest()->getPost();
+	    	if ($form->isValid($formData)) {
+	    		$email = $form->getValue('email');
+	    		//check mail
+	    		//create unique code
+	    		$unique = substr(md5(uniqid()), 3, 6);				
+	   			$mail = new Zend_Mail();
+	    		$tr = new Zend_Mail_Transport_Smtp('uit.telenet.be');
+	    		$mail->setFrom('forgot@marlon.be', 'Server');
+	   			$mail->addTo($email);
+	    		$mail->setSubject('Password recovery');
+	   			$mail->setBodyText('your new  pasword is ' . $unique);
+	    		$mail->send($tr);
+	    		//$users->changePass($email, $unique);
+	    		$user = $this->em->getRepository('entities\User')->findOneByEmail($email);
+	    		$user->setPass(md5($unique));
     		}
     	}
         
@@ -58,40 +45,26 @@ class IndexController extends Zend_Controller_Action
     
     //login action
     public function loginAction() {
-    	
     	$form = new Application_Form_Login();
     	$form->submit->setLabel('Login');
     	$this->view->form = $form;
-    	
     	if ($this->getRequest()->isPost()) {
     		$formData = $this->getRequest()->getPost();
     		if ($form->isValid($formData)) {
     			//form valid add user get user information
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass');
-				
-    			
     			$user = $this->em->getRepository('entities\User')->login($email, md5($pass));
-    			
     			if($user != null){
-    				
     				$result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS,$user,array());
     			}else{
     				$result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID,null,array());
     			}
     			$auth = Zend_Auth::getInstance();
-    			
-    			
     			if($result->isValid())
     			{
-    				// get all info about this user from the login table
-    				// ommit only the password, we don't need that
-    				
-    				
-    				// the default storage is a session with namespace Zend_Auth
     				$authStorage = $auth->getStorage();
     				$authStorage->write($user);
-    				
     				$this->_helper->redirector('index','user' , null, array());
     			} else {
     				//do nothing 
@@ -101,12 +74,6 @@ class IndexController extends Zend_Controller_Action
     			$form->populate($formData);
     		}
     	}
-    	
-    	
     }
-    
-    
-
-
 }
 

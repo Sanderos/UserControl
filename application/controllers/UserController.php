@@ -52,14 +52,11 @@ class UserController extends Zend_Controller_Action
     {
     	$groups = $this->em->getRepository('Entities\Group')->findAll();
     	$form = new Application_Form_Add(array('groups'=>$groups));
-    	
     	$form->submit->setLabel('Add');
     	$this->view->form = $form;
-    
     	if ($this->getRequest()->isPost()) {
     		$formData = $this->getRequest()->getPost();
     		if ($form->isValid($formData)) {
-    			 
     			//form valid add user
     			//get user information
     			$firstName = $form->getValue('firstName');
@@ -67,18 +64,14 @@ class UserController extends Zend_Controller_Action
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
     			$group = $form->getValue('groups');
-    			
-    			
     			$user = new User();
     			$user->setEmail($email);
     			$user->setFirstName($firstName);
     			$user->setLastName($lastName);
     			$user->setPass(md5($pass));
-    			
     			$this->em->persist($user);
     			$this->em->flush();
 				//get the user
-    			
     			//add user to group(s)
     			foreach ($group as $g) {
     				if($group!=''){
@@ -87,13 +80,10 @@ class UserController extends Zend_Controller_Action
     				$this->em->flush();
     			}
     			$this->_helper->redirector('index','user' , null, array());
-    			 
-
     		} else {
     			$form->populate($formData);
     		}
     	}
-    
     }
     
     //add action
@@ -131,7 +121,6 @@ class UserController extends Zend_Controller_Action
     	$form = new Application_Form_Edit(array('groups'=>$groups ,'user'=>$user));
     	$form->submit->setLabel('Edit');
     	$this->view->form = $form;
-
     	if ($this->getRequest()->isPost()) {
     		//get formdata
     		$formData = $this->getRequest()->getPost();
@@ -143,7 +132,6 @@ class UserController extends Zend_Controller_Action
     			$email = $form->getValue('email');
     			$pass = $form->getValue('pass1');
     			$group = $form->getValue('groups');
-
     			$user =$this->em->getRepository('entities\User')->findOneById($id);
     			$user->removeGroups();
     			$user->setEmail($email);
@@ -160,7 +148,6 @@ class UserController extends Zend_Controller_Action
 	    			$this->em->flush();
 	    		}
     			
-    			
     			$this->_helper->redirector('index','user' , null, array());
     		} else {
     			$form->populate($formData);
@@ -173,8 +160,6 @@ class UserController extends Zend_Controller_Action
     			$user =$this->em->getRepository('entities\User')->findOneById($id);
     			$groups = $user->getGroup();
     			$group = '';
-    			
-    			
     			$arr = array("id" => $user->getId(),
     					"firstName" => $user->getFirstName(),
     					"lastName" => $user->getLastName(),
@@ -182,7 +167,6 @@ class UserController extends Zend_Controller_Action
     			);
     			$form->populate($arr);
     			$this->view->user = $user;
-    
     		}else{
     			$this->_helper->redirector('index','user' , null, array());
     		}
@@ -219,14 +203,11 @@ class UserController extends Zend_Controller_Action
     	if ($this->getRequest()->isPost()) {
     		//if request is post
     		$del = $this->getRequest()->getPost('del');
-    
     		//if delete button pressed (else go to index, overview)
     		if ($del == 'Yes') {
     			//get id
     			$id = $this->getRequest()->getPost('id');
-    		
     			$group= $this->em->getRepository('Entities\Group')->findOneById($id);
-    			
     			$this->em->remove($group);
     			$this->em->flush();
     		}
@@ -247,7 +228,6 @@ class UserController extends Zend_Controller_Action
     
     //edit groups
     public function groupsAction() {
-    	
     	$paginator = Zend_Paginator::factory($this->em->getRepository('Entities\Group')->findAll());
     	$currentPage= $this->_getParam('page');
     	//Set the properties for the pagination
@@ -262,11 +242,8 @@ class UserController extends Zend_Controller_Action
     	$group =$this->em->getRepository('Entities\Group')->findOneById($id);
     	$users = $this->em->getRepository('Entities\User')->findAll();
     	$form = new Application_Form_Editgroup(array('user'=>$users, 'group' => $group));
-    	
-    	
     	$form->submit->setLabel('Edit group');
     	$this->view->form = $form;
-    	
     	if ($this->getRequest()->isPost()) {
     		$formData = $this->getRequest()->getPost();
     		if ($form->isValid($formData)) {
@@ -274,9 +251,6 @@ class UserController extends Zend_Controller_Action
     			$id = $form->getValue('id');
     			$name = $form->getValue('name');
     			$checkusers = $form->getValue('users');
-    			
-    			
-    			
     			$group =$this->em->getRepository('Entities\Group')->findOneById($id);
     			$group->setName($name);
     			foreach($group->getUsers() as $u) {
@@ -289,7 +263,6 @@ class UserController extends Zend_Controller_Action
     				}
     				$this->em->flush();
     			}
-    			
     			$this->em->persist($group);
     			$this->em->flush();
     			$this->_helper->redirector('groups','user' , null, array());		
@@ -301,8 +274,7 @@ class UserController extends Zend_Controller_Action
     		$group =$this->em->getRepository('Entities\Group')->findOneById($id);
     		if ($group != null) {
     			$arr = array("id" => $group->getId(),
-    					"name" => $group->getName()
-    					
+    					"name" => $group->getName()	
     			);
     			$form->populate($arr);
     			$this->view->users = $group->getUsers();
@@ -319,8 +291,6 @@ class UserController extends Zend_Controller_Action
     	$user =$this->em->getRepository('Entities\User')->findOneById($id_user);
     	$user->removeUser($group);
     	$this->em->flush();
-    	
-    	
     	$this->_helper->redirector('editgroup','user' , null, array('id'=>$id));
     }
     

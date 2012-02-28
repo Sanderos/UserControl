@@ -1,23 +1,22 @@
 <?php
-
-
 class Application_Form_Edit extends Zend_Form
 {
 	private $groups;
 	private $user;
 	
-	public function setGroups($groups) {
+	public function setGroups($groups) 
+	{
 		$this->groups = $groups;
 	}
 	
-	public function setUser($user) {
+	public function setUser($user) 
+	{
 		$this->user = $user;
 	}
 	
 	public function init()
 	{
 		$this->setName('user');
-		
 		$id = new Zend_Form_Element_Hidden('id');
 		$id->addFilter('Int');
 		
@@ -68,10 +67,7 @@ class Application_Form_Edit extends Zend_Form
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
 		$cansel = new Zend_Form_Element_Submit('cansel');
-	
-	
 		$this->addElements(array($id, $firstName, $lastName, $email, $pass1 , $pass2, $group, $submit));
 	}
-	}
-	
-	//EOF
+}	
+//EOF

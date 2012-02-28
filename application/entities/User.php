@@ -16,7 +16,8 @@ class User
 	 */
 	private $groups;
 	
-	public function __construct() {
+	public function __construct() 
+	{
 		$this->groups = new ArrayCollection();
 	}
 	
@@ -52,53 +53,65 @@ class User
 	protected $password;
 
 	//getters & setters
-	public function setLastName($lastName) {
+	public function setLastName($lastName) 
+	{
 		$this->lastName = $lastName;
 	}
 	
-	public function getLastName() {
+	public function getLastName() 
+	{
 		return $this->lastName;
 	}
 	
-	public function setFirstName($firstName) {
+	public function setFirstName($firstName) 
+	{
 		$this->firstName = $firstName;
 	}
 	
-	public function getFirstName() {
+	public function getFirstName() 
+	{
 		return $this->firstName;
 	}
 	
-	public function setPass($pass) {
+	public function setPass($pass) 
+	{
 		$this->password = $pass;
 	}
 	
-	public function getPass() {
+	public function getPass() 
+	{
 		return $this->password;
 	}
 	
-	public function setEmail($email) {
+	public function setEmail($email) 
+	{
 		$this->email = $email;
 	}
 	
-	public function getEmail() {
+	public function getEmail() 
+	{
 		return $this->email;
 	}
 	
-	public function getId() {
+	public function getId() 
+	{
 		return $this->id;
 	}
 	
-	public function addGroup(Group $group) {
+	public function addGroup(Group $group) 
+	{
 		if(!$this->groups->contains($group)) {
 			$this->groups->add($group);
 		}
 	}
 	
-	public function removeGroups() {
+	public function removeGroups() 
+	{
 			$this->groups->clear();
 	}
 	
-	public function removeUser(Group $group) {
+	public function removeUser(Group $group) 
+	{
 		$this->groups->removeElement($group);
 	}
 	

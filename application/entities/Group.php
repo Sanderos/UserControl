@@ -9,14 +9,14 @@ use Doctrine\Common\Collections\ArrayCollection;
  **/
 class Group
 {
-	
 	// ...
 	/**
 	 * @ManyToMany(targetEntity="User", mappedBy="groups")
 	 */
 	private $users;
 	
-	public function __construct() {
+	public function __construct() 
+	{
 		$this->users = new ArrayCollection();
 	}
 	
@@ -33,22 +33,25 @@ class Group
 	 **/
 	protected $name;
 	
-	public function setName($name) {
+	public function setName($name) 
+	{
 		$this->name = $name;
 	}
 	
-	public function getName() {
+	public function getName() 
+	{
 		return $this->name;
 	}
 	
-	public function getId() {
+	public function getId() 
+	{
 		return $this->id;
 	}
 	
-	public function getUsers() {
+	public function getUsers() 
+	{
 		return $this->users;
 	}
-	
 	
 	
 }

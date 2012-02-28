@@ -10,7 +10,6 @@ class Application_Form_Add extends Zend_Form
 		$this->groups = $groups;
 	}
 	
-	
 	public function init()
 	{
 		$this->setName('user');
@@ -69,7 +68,6 @@ class Application_Form_Add extends Zend_Form
 		}
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
-		
 		$this->addElements(array($firstName, $lastName, $email, $pass1 , $pass2,$group, $submit));
 	}
 }
