@@ -43,6 +43,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			    'dbname'   => $doctrineDB['dbname']
 		);
 		$em = EntityManager::create($connectionOptions, $config);
+		
+		$view = new Zend_View();
+		$view->addHelperPath('../library/ZendX/JQuery/View/Helper/', 'ZendX_JQuery_View_Helper');
+		
+		$viewRenderer = new Zend_Controller_Action_Helper_ViewRenderer();
+		$viewRenderer->setView($view);
+		Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
+		
 		Zend_Registry::set('em', $em);
 		return $em;
 	}

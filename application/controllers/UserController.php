@@ -19,8 +19,14 @@ class UserController extends Zend_Controller_Action
     
     public function indexAction()
     {
+    	$searchT = $this->em->getRepository('Entities\User')->findAll();
+    	$usersEmail = array();
+    	foreach ($searchT as $user) {
+    		array_push($usersEmail, $user->getEmail());
+    	}
     	$search =$this->_getParam('search');
-    	$form = new Application_Form_Search();
+    	
+    	$form = new Application_Form_Search(array('search'=>$usersEmail));
     	$form->submit->setLabel('search');
     	$this->view->form = $form;
     	if ($this->getRequest()->isPost()) {
@@ -44,6 +50,7 @@ class UserController extends Zend_Controller_Action
     	$paginator->setItemCountPerPage(5);
     	$paginator->setPageRange(3);
     	$paginator->setCurrentPageNumber($currentPage);
+    	//$this->view->addHelperPath('../../library/ZendX/JQuery/View/Helper/', 'ZendX_JQuery_View_Helper');
     	$this->view->paginator = $paginator;
     }
     

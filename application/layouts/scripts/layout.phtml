@@ -95,8 +95,16 @@ h1
  }
 
 </style>
-<title>Beheersysteem</title>
- 
+	<title>Beheersysteem</title>
+	<?php
+           echo $this->headLink()
+                ->prependStylesheet('css/global.css')
+                ->appendStylesheet('css/smoothness/jquery-ui-1.8.2.custom.css');
+        ?>
+
+	 <?php echo $this->jQuery()
+                        ->setVersion('1.4.2')
+                        ->setUiVersion('1.8.2'); ?>
 </head>
 
 <body>
