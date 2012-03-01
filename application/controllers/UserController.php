@@ -19,7 +19,7 @@ class UserController extends Zend_Controller_Action
     
     public function indexAction()
     {
-    	$searchT = $this->em->getRepository('Entities\User')->findAll();
+    	$searchT = $this->em->getRepository('Entities\User')->findByConfirm(0);
     	$usersEmail = array();
     	foreach ($searchT as $user) {
     		array_push($usersEmail, $user->getEmail());
@@ -35,14 +35,14 @@ class UserController extends Zend_Controller_Action
     			//$paginator = Zend_Paginator::factory($users->serachUsers($form->getValue('searchfield')));
     			$this->_helper->redirector('index', null , null, array('search'=>$form->getValue('searchfield')));
     		} else {
-    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findAll());
+    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findByConfirm(0));
     		}
     	} else {
     		//Initialize the Zend_Paginator
     		if($search != null) {
     			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->searchUsers($search));
     		}else {
-    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findAll());
+    			$paginator = Zend_Paginator::factory($this->em->getRepository('entities\User')->findByConfirm(0));
     		}
     	}
     	$currentPage= $this->_getParam('page');
@@ -75,6 +75,7 @@ class UserController extends Zend_Controller_Action
     			$user->setEmail($email);
     			$user->setFirstName($firstName);
     			$user->setLastName($lastName);
+    			$user->setConfirm(0);
     			$user->setPass(md5($pass));
     			$this->em->persist($user);
     			$this->em->flush();
@@ -118,11 +119,12 @@ class UserController extends Zend_Controller_Action
     	}
     
     }
-    
+        
     //edit action
     public function editAction()
     {
     	$id = $this->_getParam('id', 0);
+    	if(!$this->checkIfUserConfirmed($id)) $this->_helper->redirector('index','user' , null, array());
     	$groups = $this->em->getRepository('Entities\Group')->findAll();
     	$user =$this->em->getRepository('entities\User')->findOneById($id);
     	$form = new Application_Form_Edit(array('groups'=>$groups ,'user'=>$user));
@@ -133,7 +135,7 @@ class UserController extends Zend_Controller_Action
     		$formData = $this->getRequest()->getPost();
     		if ($form->isValid($formData)) {
     			$id = $form->getValue('id');
-    			 
+    			
     			$firstName = $form->getValue('firstName');
     			$lastName = $form->getValue('lastName');
     			$email = $form->getValue('email');
@@ -162,8 +164,6 @@ class UserController extends Zend_Controller_Action
     	}else {
     		$id = $this->_getParam('id', 0);
     		if ($id > 0) {
-    			//$users = new Application_Model_DbTable_Users();
-    			//$user =$users->getUser($id);
     			$user =$this->em->getRepository('entities\User')->findOneById($id);
     			$groups = $user->getGroup();
     			$group = '';
@@ -198,6 +198,7 @@ class UserController extends Zend_Controller_Action
     		}
     		$this->_helper->redirector('index','user' , null, array());;
     	} else {
+    		
     		$id = $this->_getParam('id', 0);
     		$user =$this->em->getRepository('entities\User')->findOneById($id);
     		if($user == null)$this->_helper->redirector('index','user' , null, array());
@@ -221,6 +222,7 @@ class UserController extends Zend_Controller_Action
     		$this->_helper->redirector('groups','user' , null, array());;
     	} else {
     		$id = $this->_getParam('id', 0);
+    		if(!$this->checkIfUserComfirmed($id)) $this->_helper->redirector('index','user' , null, array());
     		$group= $this->em->getRepository('Entities\Group')->findOneById($id);
     		if($group == null)$this->_helper->redirector('groups','user' , null, array());
     		$this->view->group = $group;
@@ -247,7 +249,7 @@ class UserController extends Zend_Controller_Action
     public function editgroupAction() {
     	$id = $this->_getParam('id', 0);
     	$group =$this->em->getRepository('Entities\Group')->findOneById($id);
-    	$users = $this->em->getRepository('Entities\User')->findAll();
+    	$users = $this->em->getRepository('Entities\User')->findByConfirm(0);
     	$form = new Application_Form_Editgroup(array('user'=>$users, 'group' => $group));
     	$form->submit->setLabel('Edit group');
     	$this->view->form = $form;
@@ -301,4 +303,13 @@ class UserController extends Zend_Controller_Action
     	$this->_helper->redirector('editgroup','user' , null, array('id'=>$id));
     }
     
+    public function checkIfUserConfirmed($id) {
+    	if($this->em->getRepository('Entities\User')->findOneById($id)->getConfirm() == 0) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 }
+
+

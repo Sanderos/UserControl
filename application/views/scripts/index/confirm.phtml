@@ -1,0 +1,25 @@
+
+<style>
+
+	.error {
+		color: red;
+	}
+	
+	
+	form dl dt {
+			margin : 0 0 0 20px;
+			float:  left;
+			clear: left;
+			width: 150px;
+			padding:  0 10px 0 0;
+			height:  24px;
+			line-height: 24px;
+		}
+</style>
+<h2>confirm</h2>
+<?php if ($this->valid): ?>
+	<p>Your email has been verified</p>
+	<a href="<?php echo $this->url(array('controller'=>'index', 
+	            'action'=>'login'));?>" transition-link="" transition-name="slide">login</a>
+<?php endif; ?>
+<p><span class="error"><?php echo $this->error;?></span></p>

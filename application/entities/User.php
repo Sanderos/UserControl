@@ -51,11 +51,27 @@ class User
 	 * @var string
 	 **/
 	protected $password;
+	
+	/**
+	 * @Column(type="integer")
+	 * @var int
+	 **/
+	protected $confirm;
 
 	//getters & setters
 	public function setLastName($lastName) 
 	{
 		$this->lastName = $lastName;
+	}
+	
+	public function setConfirm($confirm)
+	{
+		$this->confirm = $confirm;
+	}
+	
+	public function getConfirm()
+	{
+		return $this->confirm;
 	}
 	
 	public function getLastName() 

@@ -10,6 +10,7 @@ class UserRepository extends EntityRepository
 		->from('entities\User', 'u')
 		->where('u.email = :email')
 		->andWhere('u.password = :pass')
+		->andWhere('u.confirm = 0')
 		->setParameter('email', $email)
 		->setParameter('pass', $pass);
 		return $qb->getQuery()->getResult();
@@ -23,6 +24,7 @@ class UserRepository extends EntityRepository
 		->where('u.email LIKE :search')
 		->orWhere('u.firstName LIKE :search')
 		->orWhere('u.lastName LIKE :search')
+		->andWhere('u.confirm = 0')
 		->setParameter('search', '%' . $search . '%');
 		return $qb->getQuery()->getResult();
 	}	
