@@ -25,19 +25,24 @@ class IndexController extends Zend_Controller_Action
 	    	$formData = $this->getRequest()->getPost();
 	    	if ($form->isValid($formData)) {
 	    		$email = $form->getValue('email');
-	    		//check mail
-	    		//create unique code
-	    		$unique = substr(md5(uniqid()), 3, 6);				
-	   			$mail = new Zend_Mail();
-	    		$tr = new Zend_Mail_Transport_Smtp('uit.telenet.be');
-	    		$mail->setFrom('forgot@marlon.be', 'Server');
-	   			$mail->addTo($email);
-	    		$mail->setSubject('Password recovery');
-	   			$mail->setBodyText('your new  pasword is ' . $unique);
-	    		$mail->send($tr);
-	    		//$users->changePass($email, $unique);
 	    		$user = $this->em->getRepository('entities\User')->findOneByEmail($email);
-	    		$user->setPass(md5($unique));
+	    		if($user->getConfirm() == 0 ) {
+		    			//check mail
+		    		//create unique code
+		    		$unique = substr(md5(uniqid()), 3, 6);				
+		   			$mail = new Zend_Mail();
+		    		$tr = new Zend_Mail_Transport_Smtp('uit.telenet.be');
+		    		$mail->setFrom('forgot@marlon.be', 'Server');
+		   			$mail->addTo($email);
+		    		$mail->setSubject('Password recovery');
+		   			$mail->setBodyText('your new  pasword is ' . $unique);
+		    		$mail->send($tr);
+
+		    		$user->setPass(md5($unique));
+	    		} else {
+	    			$this->view->error = "Your email hasn't been verified yet";
+	    		}
+	    		
     		}
     	}
         

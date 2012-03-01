@@ -4,6 +4,8 @@ use Entities\Group ;
 
 class Application_Form_Register extends Zend_Form
 {
+	
+	
 	public function init()
 	{
 		$this->setName('user');
@@ -47,11 +49,27 @@ class Application_Form_Register extends Zend_Form
 		->addFilter('StringTrim')
 		->addValidator(new Zend_Validate_Identical('pass1'))
 		->addValidator('NotEmpty');
-
 		
+		$recaptchaKeys = Zend_Registry::get('config.recaptcha');
+		
+		$recaptcha = new Zend_Service_ReCaptcha($recaptchaKeys['pubkey'], $recaptchaKeys['privkey'],
+				NULL, array('theme' => 'clean'));
+		
+		$captcha = new Zend_Form_Element_Captcha('captcha',
+				array(
+						'label' => 'Type the characters you see in the picture below.',
+						'captcha' =>  'ReCaptcha',
+						'captchaOptions'        => array(
+								'captcha'   => 'ReCaptcha',
+								'service' => $recaptcha
+						)
+				)
+		);
+
+				
 		$submit = new Zend_Form_Element_Submit('submit');
 		$submit->setAttrib('id', 'submitbutton');
-		$this->addElements(array($firstName, $lastName, $email, $pass1 , $pass2, $submit));
+		$this->addElements(array($firstName, $lastName, $email, $pass1 , $pass2 ,$captcha , $submit));
 	}
 }
 

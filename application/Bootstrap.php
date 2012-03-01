@@ -42,6 +42,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			    'password' => $doctrineDB['password'],
 			    'dbname'   => $doctrineDB['dbname']
 		);
+		
+		$this->options = $this->getOptions();
+		Zend_Registry::set('config.recaptcha', $this->options['recaptcha']);
+		
 		$em = EntityManager::create($connectionOptions, $config);
 		
 		$view = new Zend_View();
